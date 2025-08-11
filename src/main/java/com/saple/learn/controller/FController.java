@@ -10,6 +10,6 @@ public class FController {
 
     @GetMapping("/test") // Endpoint: GET /api/test
     public String test() {
-        return "Test success....";
+        return "Test successsss....";
     }
 }
