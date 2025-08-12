@@ -17,30 +17,26 @@
     <packaging>war</packaging>
 
     <name>sample</name>
-    <description>Learn transaction</description>
+    <description>Spring Boot Tomcat Deploy Sample</description>
 
     <properties>
         <java.version>1.8</java.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <cargo.maven.plugin.version>1.9.15</cargo.maven.plugin.version>
+        <cargo.maven.plugin.version>1.10.8</cargo.maven.plugin.version>
     </properties>
 
     <dependencies>
-        <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Tomcat provided for WAR deployment -->
+        <!-- Tomcat provided in WAR mode -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Test dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -50,7 +46,6 @@
 
     <build>
         <plugins>
-            <!-- Java compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -61,55 +56,55 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Cargo Maven plugin for Tomcat deployment -->
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
                 <version>${cargo.maven.plugin.version}</version>
-                <configuration>
-                    <container>
-                        <!-- Change tomcat10x to tomcat9x if you use Tomcat 9 -->
-                        <containerId>tomcat9x</containerId>
-                        <type>remote</type>
-                    </container>
-                    <configuration>
-                        <type>runtime</type>
-                    </configuration>
-                    <deployables>
-                        <deployable>
-                            <groupId>com.sample</groupId>
-                            <artifactId>sample</artifactId>
-                            <type>war</type>
-                            <properties>
-                                <context>/sample</context>
-                            </properties>
-                        </deployable>
-                    </deployables>
-                    <remote>
-                        <hostname>localhost</hostname>
-                        <port>8080</port>
-                        <username>${cargo.remote.username}</username>
-                        <password>${cargo.remote.password}</password>
-                    </remote>
-                </configuration>
             </plugin>
         </plugins>
     </build>
 
-    <!-- Tomcat profile for deployment -->
     <profiles>
         <profile>
             <id>tomcat</id>
-            <properties>
-                <cargo.remote.username>tomcatuser</cargo.remote.username>
-                <cargo.remote.password>tomcatpass</cargo.remote.password>
-            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                        <version>${cargo.maven.plugin.version}</version>
+                        <configuration>
+                            <container>
+                                <containerId>tomcat9x</containerId>
+                                <type>remote</type>
+                            </container>
+                            <configuration>
+                                <type>runtime</type>
+                                <properties>
+                                    <cargo.remote.username>${cargo.remote.username}</cargo.remote.username>
+                                    <cargo.remote.password>${cargo.remote.password}</cargo.remote.password>
+                                    <cargo.remote.url>http://localhost:8080/manager/html</cargo.remote.url>
+                                </properties>
+                            </configuration>
+                            <deployables>
+                                <deployable>
+                                    <groupId>com.sample</groupId>
+                                    <artifactId>sample</artifactId>
+                                    <type>war</type>
+                                    <properties>
+                                        <context>/sample</context>
+                                    </properties>
+                                </deployable>
+                            </deployables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>
