@@ -25,4 +25,4 @@ COPY --from=builder /build/target/sample-0.0.1-SNAPSHOT.war app.war
 EXPOSE 8080
 
 # Run the app
-ENTRYPOINT ["java","-jar","app.war"]
+ENTRYPOINT ["java","-jar","sample.war"]
